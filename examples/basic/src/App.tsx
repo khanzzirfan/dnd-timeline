@@ -1,14 +1,15 @@
 import "./index.css";
-import { endOfDay, startOfDay } from "date-fns";
+import { endOfDay,addMinutes, addSeconds, startOfDay } from "date-fns";
 import type { DragEndEvent, Range, ResizeEndEvent } from "dnd-timeline";
 import { TimelineContext } from "dnd-timeline";
 import React, { useCallback, useState } from "react";
 import Timeline from "./Timeline";
 import { generateItems, generateRows } from "./utils";
 
-const DEFAULT_RANGE: Range = {
-	start: startOfDay(new Date()).getTime(),
-	end: endOfDay(new Date()).getTime(),
+const defaultDate = new Date('2021-01-01T00:00:00.000Z');
+const DEFAULT_RANGE = {
+  start: addMinutes(defaultDate, 0).getTime(),
+  end: addMinutes(defaultDate, 5).getTime()
 };
 
 function App() {
@@ -59,6 +60,10 @@ function App() {
 	}, []);
 
 	return (
+		<>
+		<h1>Basic</h1>
+		<h1>Basic</h1>
+		<h1>Basic</h1>
 		<TimelineContext
 			range={range}
 			onDragEnd={onDragEnd}
@@ -67,6 +72,7 @@ function App() {
 		>
 			<Timeline items={items} rows={rows} />
 		</TimelineContext>
+		</>
 	);
 }
 

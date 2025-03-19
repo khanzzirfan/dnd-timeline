@@ -6,6 +6,8 @@ interface ItemProps {
 	id: string;
 	span: Span;
 	children: React.ReactNode;
+	maxEndTime?: number;
+	minStartTime?: number;
 }
 
 function Item(props: ItemProps) {
@@ -13,6 +15,8 @@ function Item(props: ItemProps) {
 		useItem({
 			id: props.id,
 			span: props.span,
+			maxEndTime: props.maxEndTime,
+			minStartTime: props.minStartTime,
 		});
 
 	return (

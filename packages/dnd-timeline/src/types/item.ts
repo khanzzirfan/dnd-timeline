@@ -17,10 +17,12 @@ export interface ItemDefinition {
 	rowId: string;
 	disabled?: boolean;
 	span: Span;
+	maxEndTime?: number;
+	minStartTime?: number;
 }
 
 export interface UseItemProps
-	extends Pick<ItemDefinition, "id" | "span" | "disabled"> {
+	extends Pick<ItemDefinition, "id" | "span" | "disabled"| "maxEndTime" | "minStartTime"> {
 	data?: object;
 	onResizeEnd?: (event: ResizeEndEvent) => void;
 	onResizeMove?: (event: ResizeMoveEvent) => void;
