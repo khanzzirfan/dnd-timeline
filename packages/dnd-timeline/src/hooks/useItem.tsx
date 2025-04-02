@@ -39,6 +39,9 @@ export default function useItem(props: UseItemProps) {
 	const dragStartX = useRef<number>();
 	const [dragDirection, setDragDirection] = useState<DragDirection | null>();
 
+	const maxEndTime = props.maxEndTime || 0;
+	const minStartTime = props.minStartTime || 0;
+
 	const {
 		range,
 		overlayed,
@@ -94,10 +97,14 @@ export default function useItem(props: UseItemProps) {
 	});
 
 	const deltaXStart = valueToPixels(props.span.start - range.start);
+	const minDeltaXStart = valueToPixels(minStartTime - range.start);
 
 	const deltaXEnd = valueToPixels(range.end - props.span.end);
 
 	const width = valueToPixels(props.span.end - props.span.start);
+	const maxWidthInPixel = valueToPixels(maxEndTime - minStartTime);
+	const minLeft = valueToPixels(minStartTime - range.start);
+	// const maxRight = valueToPixels(maxEndTime - range.start);
 
 	const sideStart = direction === "rtl" ? "right" : "left";
 
@@ -120,14 +127,29 @@ export default function useItem(props: UseItemProps) {
 
 			if (dragDirection === "start") {
 				const newSideDelta = deltaXStart + dragDeltaX;
-				draggableProps.node.current.style[sideStart] = `${newSideDelta}px`;
-
 				const newWidth = width + deltaXStart - newSideDelta;
-				draggableProps.node.current.style.width = `${newWidth}px`;
+				if (minStartTime && minLeft >= newSideDelta) {
+					const currentMinLeft = Math.max(minLeft, newSideDelta);
+					draggableProps.node.current.style[sideStart] = `${currentMinLeft}px`;
+				} else {
+					draggableProps.node.current.style[sideStart] = `${newSideDelta}px`;
+					draggableProps.node.current.style.width = `${newWidth}px`;
+				}
+
+				if (maxEndTime) {
+					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
+					draggableProps.node.current.style.width = `${currentMaxWidth}px`;
+					draggableProps.node.current.style.maxWidth = `${maxWidthInPixel}px`;
+				}
 			} else {
 				const otherSideDelta = deltaXStart + width + dragDeltaX;
 				const newWidth = otherSideDelta - deltaXStart;
 				draggableProps.node.current.style.width = `${newWidth}px`;
+				if (maxEndTime) {
+					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
+					draggableProps.node.current.style.width = `${currentMaxWidth}px`;
+					draggableProps.node.current.style.maxWidth = `${maxWidthInPixel}px`;
+				}
 			}
 
 			onResizeMoveCallback({
@@ -157,6 +179,10 @@ export default function useItem(props: UseItemProps) {
 		direction,
 		draggableProps.node,
 		onResizeMoveCallback,
+		maxWidthInPixel,
+		maxEndTime,
+		minStartTime,
+		minDeltaXStart,
 	]);
 
 	useLayoutEffect(() => {
@@ -193,8 +219,10 @@ export default function useItem(props: UseItemProps) {
 
 			setDragDirection(null);
 
-			draggableProps.node.current.style.width = `${width}px`;
-			draggableProps.node.current.style[sideStart] = `${deltaXStart}px`;
+			if (draggableProps.node.current?.style) {
+				draggableProps.node.current.style.width = `${width}px`;
+				draggableProps.node.current.style[sideStart] = `${deltaXStart}px`;
+			}
 		};
 
 		window.addEventListener("pointerup", pointerupHandler);
