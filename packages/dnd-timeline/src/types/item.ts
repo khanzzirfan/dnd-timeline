@@ -22,7 +22,10 @@ export interface ItemDefinition {
 }
 
 export interface UseItemProps
-	extends Pick<ItemDefinition, "id" | "span" | "disabled"| "maxEndTime" | "minStartTime"> {
+	extends Pick<
+		ItemDefinition,
+		"id" | "span" | "disabled" | "maxEndTime" | "minStartTime"
+	> {
 	data?: object;
 	onResizeEnd?: (event: ResizeEndEvent) => void;
 	onResizeMove?: (event: ResizeMoveEvent) => void;

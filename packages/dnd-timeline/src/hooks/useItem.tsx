@@ -39,8 +39,8 @@ export default function useItem(props: UseItemProps) {
 	const dragStartX = useRef<number>();
 	const [dragDirection, setDragDirection] = useState<DragDirection | null>();
 
-	const maxEndTime = props.maxEndTime ||0;
-	const minStartTime = props.minStartTime ||0;
+	const maxEndTime = props.maxEndTime || 0;
+	const minStartTime = props.minStartTime || 0;
 
 	const {
 		range,
@@ -128,7 +128,7 @@ export default function useItem(props: UseItemProps) {
 			if (dragDirection === "start") {
 				const newSideDelta = deltaXStart + dragDeltaX;
 				const newWidth = width + deltaXStart - newSideDelta;
-				if(minStartTime && minLeft >= newSideDelta) {
+				if (minStartTime && minLeft >= newSideDelta) {
 					const currentMinLeft = Math.max(minLeft, newSideDelta);
 					draggableProps.node.current.style[sideStart] = `${currentMinLeft}px`;
 				} else {
@@ -136,7 +136,7 @@ export default function useItem(props: UseItemProps) {
 					draggableProps.node.current.style.width = `${newWidth}px`;
 				}
 
-				if(maxEndTime) {
+				if (maxEndTime) {
 					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
 					draggableProps.node.current.style.width = `${currentMaxWidth}px`;
 					draggableProps.node.current.style.maxWidth = `${maxWidthInPixel}px`;
@@ -145,7 +145,7 @@ export default function useItem(props: UseItemProps) {
 				const otherSideDelta = deltaXStart + width + dragDeltaX;
 				const newWidth = otherSideDelta - deltaXStart;
 				draggableProps.node.current.style.width = `${newWidth}px`;
-				if(maxEndTime) {
+				if (maxEndTime) {
 					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
 					draggableProps.node.current.style.width = `${currentMaxWidth}px`;
 					draggableProps.node.current.style.maxWidth = `${maxWidthInPixel}px`;
@@ -182,7 +182,7 @@ export default function useItem(props: UseItemProps) {
 		maxWidthInPixel,
 		maxEndTime,
 		minStartTime,
-		minDeltaXStart
+		minDeltaXStart,
 	]);
 
 	useLayoutEffect(() => {
