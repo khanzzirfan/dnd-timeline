@@ -19,6 +19,9 @@ export interface ItemDefinition {
 	span: Span;
 	maxEndTime?: number;
 	minStartTime?: number;
+	subType?: "text" | "image" | "video" | "gap" | string;
+	type?: "gap" | "item" | "row" | string;
+	spanSeconds?: { start: number; end: number };
 }
 
 export interface UseItemProps

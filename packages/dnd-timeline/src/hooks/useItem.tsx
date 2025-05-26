@@ -1,4 +1,4 @@
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties, PointerEventHandler } from "react";
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -90,7 +90,14 @@ export default function useItem(props: UseItemProps) {
 		...(props.data || {}),
 	};
 
-	const draggableProps = useDraggable({
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({
 		id: props.id,
 		data: dataRef.current,
 		disabled: props.disabled,
@@ -98,29 +105,23 @@ export default function useItem(props: UseItemProps) {
 
 	const deltaXStart = valueToPixels(props.span.start - range.start);
 	const minDeltaXStart = valueToPixels(minStartTime - range.start);
-
 	const deltaXEnd = valueToPixels(range.end - props.span.end);
-
 	const width = valueToPixels(props.span.end - props.span.start);
 	const maxWidthInPixel = valueToPixels(maxEndTime - minStartTime);
 	const minLeft = valueToPixels(minStartTime - range.start);
-	// const maxRight = valueToPixels(maxEndTime - range.start);
 
 	const sideStart = direction === "rtl" ? "right" : "left";
-
 	const sideEnd = direction === "rtl" ? "left" : "right";
 
-	const cursor = props.disabled
-		? "inherit"
-		: draggableProps.isDragging
-			? "grabbing"
-			: "grab";
+	const cursor = props.disabled ? "inherit" : isDragging ? "grabbing" : "grab";
+
+	const nodeRef = useRef<HTMLElement | null>(null);
 
 	useLayoutEffect(() => {
 		if (!dragDirection) return;
 
-		const pointermoveHandler = (event: globalThis.PointerEvent) => {
-			if (!dragStartX.current || !draggableProps.node.current) return;
+		const pointermoveHandler = (event: PointerEvent) => {
+			if (!dragStartX.current || !nodeRef.current) return;
 
 			const dragDeltaX =
 				(event.clientX - dragStartX.current) * (direction === "rtl" ? -1 : 1);
@@ -130,25 +131,25 @@ export default function useItem(props: UseItemProps) {
 				const newWidth = width + deltaXStart - newSideDelta;
 				if (minStartTime && minLeft >= newSideDelta) {
 					const currentMinLeft = Math.max(minLeft, newSideDelta);
-					draggableProps.node.current.style[sideStart] = `${currentMinLeft}px`;
+					nodeRef.current.style[sideStart] = `${currentMinLeft}px`;
 				} else {
-					draggableProps.node.current.style[sideStart] = `${newSideDelta}px`;
-					draggableProps.node.current.style.width = `${newWidth}px`;
+					nodeRef.current.style[sideStart] = `${newSideDelta}px`;
+					nodeRef.current.style.width = `${newWidth}px`;
 				}
 
 				if (maxEndTime) {
 					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
-					draggableProps.node.current.style.width = `${currentMaxWidth}px`;
-					draggableProps.node.current.style.maxWidth = `${maxWidthInPixel}px`;
+					nodeRef.current.style.width = `${currentMaxWidth}px`;
+					nodeRef.current.style.maxWidth = `${maxWidthInPixel}px`;
 				}
 			} else {
 				const otherSideDelta = deltaXStart + width + dragDeltaX;
 				const newWidth = otherSideDelta - deltaXStart;
-				draggableProps.node.current.style.width = `${newWidth}px`;
+				nodeRef.current.style.width = `${newWidth}px`;
 				if (maxEndTime) {
 					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
-					draggableProps.node.current.style.width = `${currentMaxWidth}px`;
-					draggableProps.node.current.style.maxWidth = `${maxWidthInPixel}px`;
+					nodeRef.current.style.width = `${currentMaxWidth}px`;
+					nodeRef.current.style.maxWidth = `${maxWidthInPixel}px`;
 				}
 			}
 
@@ -166,10 +167,7 @@ export default function useItem(props: UseItemProps) {
 		};
 
 		window.addEventListener("pointermove", pointermoveHandler);
-
-		return () => {
-			window.removeEventListener("pointermove", pointermoveHandler);
-		};
+		return () => window.removeEventListener("pointermove", pointermoveHandler);
 	}, [
 		sideStart,
 		width,
@@ -177,7 +175,6 @@ export default function useItem(props: UseItemProps) {
 		props.id,
 		dragDirection,
 		direction,
-		draggableProps.node,
 		onResizeMoveCallback,
 		maxWidthInPixel,
 		maxEndTime,
@@ -188,20 +185,17 @@ export default function useItem(props: UseItemProps) {
 	useLayoutEffect(() => {
 		if (!dragDirection) return;
 
-		const pointerupHandler = (event: globalThis.PointerEvent) => {
-			if (!dragStartX.current || !draggableProps.node.current) return;
+		const pointerupHandler = (event: PointerEvent) => {
+			if (!dragStartX.current || !nodeRef.current) return;
 
 			let dragDeltaX = 0;
-
 			if (dragDirection === "start") {
 				const currentSideDelta = Number.parseInt(
-					draggableProps.node.current.style[sideStart].slice(0, -2),
+					nodeRef.current.style[sideStart],
 				);
 				dragDeltaX = currentSideDelta - deltaXStart;
 			} else {
-				const currentWidth = Number.parseInt(
-					draggableProps.node.current.style.width.slice(0, -2),
-				);
+				const currentWidth = Number.parseInt(nodeRef.current.style.width);
 				dragDeltaX = currentWidth - width;
 			}
 
@@ -218,55 +212,44 @@ export default function useItem(props: UseItemProps) {
 			});
 
 			setDragDirection(null);
-
-			if (draggableProps.node.current?.style) {
-				draggableProps.node.current.style.width = `${width}px`;
-				draggableProps.node.current.style[sideStart] = `${deltaXStart}px`;
-			}
+			nodeRef.current.style.width = `${width}px`;
+			nodeRef.current.style[sideStart] = `${deltaXStart}px`;
 		};
 
 		window.addEventListener("pointerup", pointerupHandler);
-
-		return () => {
-			window.removeEventListener("pointerup", pointerupHandler);
-		};
+		return () => window.removeEventListener("pointerup", pointerupHandler);
 	}, [
 		sideStart,
 		width,
 		deltaXStart,
 		props.id,
 		dragDirection,
-		draggableProps.node,
 		onResizeEndCallback,
 	]);
 
 	const onPointerMove = useCallback<PointerEventHandler>(
 		(event) => {
-			if (!draggableProps.node.current || props.disabled) return;
+			if (!nodeRef.current || props.disabled) return;
 
 			const newDragDirection = getDragDirection(
 				event.clientX,
-				draggableProps.node.current.getBoundingClientRect(),
+				nodeRef.current.getBoundingClientRect(),
 				direction,
 				resizeHandleWidth,
 			);
 
-			if (newDragDirection) {
-				draggableProps.node.current.style.cursor = "col-resize";
-			} else {
-				draggableProps.node.current.style.cursor = cursor;
-			}
+			nodeRef.current.style.cursor = newDragDirection ? "col-resize" : cursor;
 		},
-		[draggableProps.node, props.disabled, direction, cursor, resizeHandleWidth],
+		[props.disabled, direction, cursor, resizeHandleWidth],
 	);
 
 	const onPointerDown = useCallback<PointerEventHandler>(
 		(event) => {
-			if (!draggableProps.node.current || props.disabled) return;
+			if (!nodeRef.current || props.disabled) return;
 
 			const newDragDirection = getDragDirection(
 				event.clientX,
-				draggableProps.node.current.getBoundingClientRect(),
+				nodeRef.current.getBoundingClientRect(),
 				direction,
 				resizeHandleWidth,
 			);
@@ -276,7 +259,8 @@ export default function useItem(props: UseItemProps) {
 				dragStartX.current = event.clientX;
 
 				onResizeStartCallback({
-					activatorEvent: event as unknown as Event,
+					// @ts-ignore
+					activatorEvent: event,
 					active: {
 						id: props.id,
 						data: dataRef,
@@ -284,7 +268,7 @@ export default function useItem(props: UseItemProps) {
 					direction: newDragDirection,
 				});
 			} else {
-				draggableProps.listeners?.onPointerDown(event);
+				listeners?.onPointerDown?.(event);
 			}
 		},
 		[
@@ -292,17 +276,15 @@ export default function useItem(props: UseItemProps) {
 			props.disabled,
 			direction,
 			resizeHandleWidth,
-			draggableProps.node,
 			onResizeStartCallback,
-			draggableProps.listeners,
+			listeners,
 		],
 	);
 
 	const paddingStart = direction === "rtl" ? "paddingRight" : "paddingLeft";
-
 	const paddingEnd = direction === "rtl" ? "paddingLeft" : "paddingRight";
 
-	const transform = CSS.Translate.toString(draggableProps.transform);
+	const styleTransform = CSS.Transform.toString(transform);
 
 	const itemStyle: CSSProperties = useMemo(
 		() => ({
@@ -314,9 +296,8 @@ export default function useItem(props: UseItemProps) {
 			cursor,
 			height: "100%",
 			touchAction: "none",
-			...(!(draggableProps.isDragging && overlayed) && {
-				transform,
-			}),
+			transition,
+			...(isDragging && overlayed ? {} : { transform: styleTransform }),
 		}),
 		[
 			width,
@@ -325,9 +306,10 @@ export default function useItem(props: UseItemProps) {
 			sideEnd,
 			deltaXEnd,
 			cursor,
-			draggableProps.isDragging,
+			transition,
+			isDragging,
 			overlayed,
-			transform,
+			styleTransform,
 		],
 	);
 
@@ -343,14 +325,24 @@ export default function useItem(props: UseItemProps) {
 		[paddingStart, paddingEnd, deltaXStart, deltaXEnd],
 	);
 
+	const setRef = useCallback(
+		(node: HTMLElement | null) => {
+			nodeRef.current = node;
+			setNodeRef(node);
+		},
+		[setNodeRef],
+	);
+
 	return {
 		itemStyle,
 		itemContentStyle,
-		...draggableProps,
+		attributes,
 		listeners: {
-			...draggableProps.listeners,
+			...listeners,
 			onPointerDown,
 			onPointerMove,
 		},
+		setNodeRef: setRef,
+		isDragging,
 	};
 }

@@ -242,6 +242,117 @@ export default function useTimeline({
 		],
 	);
 
+	// Core delta X to timespan conversion function
+	const deltaXToTimespanDifference = useCallback(
+		(deltaX: number, withGridSnapping = true) => {
+			// Convert pixel delta to timespan value using existing pixelsToValue
+			const timespanDelta = pixelsToValue(deltaX);
+
+			// Apply grid snapping if requested and rangeGridSize exists
+			if (withGridSnapping && rangeGridSize) {
+				return Math.round(timespanDelta / rangeGridSize) * rangeGridSize;
+			}
+
+			return timespanDelta;
+		},
+		[pixelsToValue, rangeGridSize],
+	);
+
+	// Enhanced version that handles direction and provides more options
+	const getDeltaTimespan = useCallback(
+		(
+			deltaX: number,
+			options?: {
+				respectDirection?: boolean;
+				snapToGrid?: boolean;
+				customRange?: Range;
+			},
+		) => {
+			const {
+				respectDirection = true,
+				snapToGrid = true,
+				customRange,
+			} = options || {};
+
+			// Use custom range if provided, otherwise use current range
+			const targetRange = customRange || range;
+			const rangeDuration = targetRange.end - targetRange.start;
+			const pixelToMs = rangeDuration / timelineViewportWidth;
+
+			// Calculate base timespan delta
+			let timespanDelta = deltaX * pixelToMs;
+
+			// Apply direction correction for RTL
+			if (respectDirection && direction === "rtl") {
+				timespanDelta *= -1;
+			}
+
+			// Apply grid snapping
+			if (snapToGrid && rangeGridSize) {
+				timespanDelta =
+					Math.round(timespanDelta / rangeGridSize) * rangeGridSize;
+			}
+
+			return timespanDelta;
+		},
+		[range, timelineViewportWidth, direction, rangeGridSize],
+	);
+
+	// Utility to convert drag event delta to timespan difference
+	const getTimespanDeltaFromDragEvent = useCallback(
+		(
+			event: any,
+			options?: {
+				respectDirection?: boolean;
+				snapToGrid?: boolean;
+			},
+		) => {
+			const deltaX = event.delta?.x || 0;
+			return getDeltaTimespan(deltaX, options);
+		},
+		[getDeltaTimespan],
+	);
+
+	// Utility to calculate new span position from original span and delta X
+	const getNewSpanFromDelta = useCallback(
+		(
+			originalSpan: { start: number; end: number },
+			deltaX: number,
+			options?: {
+				respectDirection?: boolean;
+				snapToGrid?: boolean;
+			},
+		) => {
+			const timespanDelta = getDeltaTimespan(deltaX, options);
+
+			return {
+				start: originalSpan.start + timespanDelta,
+				end: originalSpan.end + timespanDelta,
+			};
+		},
+		[getDeltaTimespan],
+	);
+
+	// Utility to get timespan difference between two screen X positions
+	const getTimespanDifferenceBetweenScreenX = useCallback(
+		(
+			screenX1: number,
+			screenX2: number,
+			options?: {
+				snapToGrid?: boolean;
+				customRange?: Range;
+			},
+		) => {
+			const deltaX = screenX2 - screenX1;
+			return getDeltaTimespan(deltaX, {
+				respectDirection: true,
+				...options,
+			});
+		},
+		[getDeltaTimespan],
+	);
+
+	// Enhanced value bag with all new utilities
 	const value = useMemo<TimelineBag>(
 		() => ({
 			style,
@@ -265,6 +376,15 @@ export default function useTimeline({
 			getDeltaXFromScreenX,
 			getSpanFromDragEvent,
 			getSpanFromResizeEvent,
+			// New timespan delta utilities
+			deltaXToTimespanDifference,
+			getDeltaTimespan,
+			getTimespanDeltaFromDragEvent,
+			getNewSpanFromDelta,
+			getTimespanDifferenceBetweenScreenX,
+			// Additional utilities
+			timelineViewportWidth,
+			snapValueToRangeGrid,
 		}),
 		[
 			range,
@@ -287,6 +407,13 @@ export default function useTimeline({
 			getDeltaXFromScreenX,
 			getSpanFromDragEvent,
 			getSpanFromResizeEvent,
+			deltaXToTimespanDifference,
+			getDeltaTimespan,
+			getTimespanDeltaFromDragEvent,
+			getNewSpanFromDelta,
+			getTimespanDifferenceBetweenScreenX,
+			timelineViewportWidth,
+			snapValueToRangeGrid,
 		],
 	);
 

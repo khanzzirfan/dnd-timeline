@@ -3,7 +3,13 @@ import type { CSSProperties, PropsWithChildren } from "react";
 
 import type { UsePanStrategy } from "..";
 
-import type { DragEndEvent, DragMoveEvent, DragStartEvent, Range } from ".";
+import type {
+	DragEndEvent,
+	DragMoveEvent,
+	DragStartEvent,
+	Range,
+	Span,
+} from ".";
 import type {
 	ResizeEndEvent,
 	ResizeMoveEvent,
@@ -59,6 +65,10 @@ export interface TimelineBag {
 	getDeltaXFromScreenX: GetDeltaXFromScreenX;
 	getSpanFromDragEvent: GetSpanFromDragEvent;
 	getSpanFromResizeEvent: GetSpanFromResizeEvent;
+	getNewSpanFromDelta: (span: Span, deltaX: number) => Span;
+	getTimespanDeltaFromDragEvent: (
+		event: DragMoveEvent | DragEndEvent | DragCancelEvent,
+	) => number;
 }
 
 export type OnRangeChanged = (updateFunction: (prev: Range) => Range) => void;
