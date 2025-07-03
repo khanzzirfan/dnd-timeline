@@ -1,15 +1,19 @@
 import "./index.css";
-import { endOfDay,addMinutes, addSeconds, startOfDay } from "date-fns";
-import type { DragEndEvent, Range, ResizeEndEvent } from "dnd-timeline-extended";
+import { addMinutes, addSeconds, endOfDay, startOfDay } from "date-fns";
+import type {
+	DragEndEvent,
+	Range,
+	ResizeEndEvent,
+} from "dnd-timeline-extended";
 import { TimelineContext } from "dnd-timeline-extended";
 import React, { useCallback, useState } from "react";
 import Timeline from "./Timeline";
 import { generateItems, generateRows } from "./utils";
 
-const defaultDate = new Date('2021-01-01T00:00:00.000Z');
+const defaultDate = new Date("2021-01-01T00:00:00.000Z");
 const DEFAULT_RANGE = {
-  start: addMinutes(defaultDate, 0).getTime(),
-  end: addMinutes(defaultDate, 5).getTime()
+	start: addMinutes(defaultDate, 0).getTime(),
+	end: addMinutes(defaultDate, 5).getTime(),
 };
 
 function App() {
@@ -61,17 +65,17 @@ function App() {
 
 	return (
 		<>
-		<h1>Basic</h1>
-		<h1>Basic</h1>
-		<h1>Basic</h1>
-		<TimelineContext
-			range={range}
-			onDragEnd={onDragEnd}
-			onResizeEnd={onResizeEnd}
-			onRangeChanged={setRange}
-		>
-			<Timeline items={items} rows={rows} />
-		</TimelineContext>
+			<h1>Basic</h1>
+			<h1>Basic</h1>
+			<h1>Basic</h1>
+			<TimelineContext
+				range={range}
+				onDragEnd={onDragEnd}
+				onResizeEnd={onResizeEnd}
+				onRangeChanged={setRange}
+			>
+				<Timeline items={items} rows={rows} />
+			</TimelineContext>
 		</>
 	);
 }

@@ -1,6 +1,11 @@
 import "./index.css";
 import { endOfDay, startOfDay } from "date-fns";
-import type { DragEndEvent, Range, ResizeEndEvent, Span } from "dnd-timeline-extended";
+import type {
+	DragEndEvent,
+	Range,
+	ResizeEndEvent,
+	Span,
+} from "dnd-timeline-extended";
 import { TimelineContext } from "dnd-timeline-extended";
 import { nanoid } from "nanoid";
 import { useCallback, useState } from "react";

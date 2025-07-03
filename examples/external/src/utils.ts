@@ -1,5 +1,10 @@
 import { differenceInMilliseconds, minutesToMilliseconds } from "date-fns";
-import type { ItemDefinition, Range, RowDefinition, Span } from "dnd-timeline-extended";
+import type {
+	ItemDefinition,
+	Range,
+	RowDefinition,
+	Span,
+} from "dnd-timeline-extended";
 import { nanoid } from "nanoid";
 import type { ExternalItemDefinition } from "./ExternalItem";
 

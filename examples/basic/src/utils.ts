@@ -1,11 +1,16 @@
-import { minutesToMilliseconds, addSeconds } from "date-fns";
-import type { ItemDefinition, Range, RowDefinition, Span } from "dnd-timeline-extended";
+import { addSeconds, minutesToMilliseconds } from "date-fns";
+import type {
+	ItemDefinition,
+	Range,
+	RowDefinition,
+	Span,
+} from "dnd-timeline-extended";
 import { nanoid } from "nanoid";
 
 interface GenerateRowsOptions {
 	disabled?: boolean;
 }
-const defaultDate = new Date('2021-01-01T00:00:00.000Z');
+const defaultDate = new Date("2021-01-01T00:00:00.000Z");
 
 export const generateRows = (count: number, options?: GenerateRowsOptions) => {
 	return Array(count)
@@ -54,10 +59,10 @@ interface GenerateItemsOptions {
 	maxLength?: number;
 }
 
-const generateSpanWithSeconds = (start:number, end:number): Span => {
+const generateSpanWithSeconds = (start: number, end: number): Span => {
 	return {
 		start: addSeconds(defaultDate, start).getTime(),
-		end: addSeconds(defaultDate, end).getTime()
+		end: addSeconds(defaultDate, end).getTime(),
 	};
 };
 
@@ -74,7 +79,7 @@ export const generateItems = (
 			const rowId = row.id;
 			const disabled = row.disabled || options?.disabled;
 
-			const span = generateSpanWithSeconds(10,30);
+			const span = generateSpanWithSeconds(10, 30);
 			const maxEndTime = addSeconds(defaultDate, 50).getTime();
 			const minStartTime = addSeconds(defaultDate, 10).getTime();
 

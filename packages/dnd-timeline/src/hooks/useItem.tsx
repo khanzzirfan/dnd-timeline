@@ -212,7 +212,7 @@ export default function useItem(props: UseItemProps) {
 				});
 
 				setDragDirection(null);
-				if(nodeRef.current && nodeRef.current.style) {
+				if (nodeRef.current && nodeRef.current.style) {
 					nodeRef.current.style.width = `${width}px`;
 					nodeRef.current.style[sideStart] = `${deltaXStart}px`;
 				}

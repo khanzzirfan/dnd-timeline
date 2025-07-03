@@ -1,5 +1,9 @@
 import { endOfDay, startOfDay } from "date-fns";
-import type { DragEndEvent, Range, ResizeEndEvent } from "dnd-timeline-extended";
+import type {
+	DragEndEvent,
+	Range,
+	ResizeEndEvent,
+} from "dnd-timeline-extended";
 import { TimelineContext } from "dnd-timeline-extended";
 import { useSetAtom } from "jotai";
 import type { PropsWithChildren } from "react";

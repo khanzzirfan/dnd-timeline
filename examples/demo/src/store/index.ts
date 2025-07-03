@@ -1,7 +1,11 @@
 import { generateItems, generateRows } from "@/lib/utils";
 import type { Active } from "@dnd-kit/core";
 import { endOfDay, startOfDay } from "date-fns";
-import type { ItemDefinition, Range, RowDefinition } from "dnd-timeline-extended";
+import type {
+	ItemDefinition,
+	Range,
+	RowDefinition,
+} from "dnd-timeline-extended";
 import { atom } from "jotai";
 
 const DEFAULT_RANGE: Range = {

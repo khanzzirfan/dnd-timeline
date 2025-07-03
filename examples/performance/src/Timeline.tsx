@@ -1,5 +1,9 @@
 import { format, hoursToMilliseconds, minutesToMilliseconds } from "date-fns";
-import type { ItemDefinition, Range, RowDefinition } from "dnd-timeline-extended";
+import type {
+	ItemDefinition,
+	Range,
+	RowDefinition,
+} from "dnd-timeline-extended";
 import { groupItemsToSubrows, useTimelineContext } from "dnd-timeline-extended";
 import React, { useMemo } from "react";
 import Item from "./Item";

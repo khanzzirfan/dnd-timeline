@@ -1,6 +1,11 @@
 import { type ClassValue, clsx } from "clsx";
 import { minutesToMilliseconds } from "date-fns";
-import type { ItemDefinition, Range, RowDefinition, Span } from "dnd-timeline-extended";
+import type {
+	ItemDefinition,
+	Range,
+	RowDefinition,
+	Span,
+} from "dnd-timeline-extended";
 import { nanoid } from "nanoid";
 import { twMerge } from "tailwind-merge";
 

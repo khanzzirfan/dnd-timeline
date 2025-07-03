@@ -26,7 +26,13 @@ function Timeline(props: TimelineProps) {
 					{groupedSubrows[row.id]?.map((subrow, index) => (
 						<Subrow key={`${row.id}-${index}`}>
 							{subrow.map((item) => (
-								<Item id={item.id} key={item.id} span={item.span} maxEndTime={item.maxEndTime} minStartTime={item.minStartTime}>
+								<Item
+									id={item.id}
+									key={item.id}
+									span={item.span}
+									maxEndTime={item.maxEndTime}
+									minStartTime={item.minStartTime}
+								>
 									{`Item ${item.id}`}
 								</Item>
 							))}
