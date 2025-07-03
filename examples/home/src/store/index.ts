@@ -1,5 +1,5 @@
 import { endOfDay, startOfDay } from "date-fns";
-import type { ItemDefinition, Range, RowDefinition } from "dnd-timeline";
+import type { ItemDefinition, Range, RowDefinition } from "dnd-timeline-extended";
 import { atom } from "jotai";
 import { generateItems, generateRows } from "../utils";
 

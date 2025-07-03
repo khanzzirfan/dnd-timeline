@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
-import type { ItemDefinition } from "dnd-timeline";
-import { useTimelineContext } from "dnd-timeline";
+import type { ItemDefinition } from "dnd-timeline-extended";
+import { useTimelineContext } from "dnd-timeline-extended";
 
 import { ItemType } from "./utils";
 

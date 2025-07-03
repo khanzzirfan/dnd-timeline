@@ -1,5 +1,5 @@
 import { Box, Text } from "@radix-ui/themes";
-import type { RowDefinition } from "dnd-timeline";
+import type { RowDefinition } from "dnd-timeline-extended";
 
 interface SidebarProps {
 	row: RowDefinition;

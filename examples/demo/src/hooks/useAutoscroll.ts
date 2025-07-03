@@ -1,5 +1,5 @@
 import { useDndMonitor } from "@dnd-kit/core";
-import { useTimelineContext } from "dnd-timeline";
+import { useTimelineContext } from "dnd-timeline-extended";
 import { useEffect, useRef, useState } from "react";
 
 interface UseAutoScrollProps {

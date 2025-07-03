@@ -7,7 +7,7 @@ import {
 	defaultRangeExtractor,
 	useVirtualizer,
 } from "@tanstack/react-virtual";
-import { groupItemsToSubrows, useTimelineContext } from "dnd-timeline";
+import { groupItemsToSubrows, useTimelineContext } from "dnd-timeline-extended";
 import { useAtom, useAtomValue } from "jotai";
 import { memo, useCallback, useMemo } from "react";
 

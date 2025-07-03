@@ -1,5 +1,5 @@
-import type { ItemDefinition, RowDefinition, Span } from "dnd-timeline";
-import { groupItemsToSubrows, useTimelineContext } from "dnd-timeline";
+import type { ItemDefinition, RowDefinition, Span } from "dnd-timeline-extended";
+import { groupItemsToSubrows, useTimelineContext } from "dnd-timeline-extended";
 import { useMemo } from "react";
 import Item from "./Item";
 import Row from "./Row";

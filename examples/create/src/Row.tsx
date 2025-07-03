@@ -1,5 +1,5 @@
-import type { RowDefinition, Span } from "dnd-timeline";
-import { useRow } from "dnd-timeline";
+import type { RowDefinition, Span } from "dnd-timeline-extended";
+import { useRow } from "dnd-timeline-extended";
 import type React from "react";
 import { type PointerEvent, useCallback, useState } from "react";
 import CreateItem from "./CreateItem";

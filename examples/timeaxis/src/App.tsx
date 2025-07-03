@@ -1,7 +1,7 @@
 import "./index.css";
 import { endOfDay, startOfDay } from "date-fns";
-import type { DragEndEvent, Range, ResizeEndEvent } from "dnd-timeline";
-import { TimelineContext } from "dnd-timeline";
+import type { DragEndEvent, Range, ResizeEndEvent } from "dnd-timeline-extended";
+import { TimelineContext } from "dnd-timeline-extended";
 import React, { useCallback, useState } from "react";
 import Timeline from "./Timeline";
 import { generateItems, generateRows } from "./utils";

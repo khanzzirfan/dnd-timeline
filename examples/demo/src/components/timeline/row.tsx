@@ -1,5 +1,5 @@
-import type { RowDefinition } from "dnd-timeline";
-import { useRow } from "dnd-timeline";
+import type { RowDefinition } from "dnd-timeline-extended";
+import { useRow } from "dnd-timeline-extended";
 import type React from "react";
 
 interface RowProps extends RowDefinition {

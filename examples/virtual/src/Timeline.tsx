@@ -4,8 +4,8 @@ import {
 	defaultRangeExtractor,
 	useVirtualizer,
 } from "@tanstack/react-virtual";
-import type { ItemDefinition, RowDefinition } from "dnd-timeline";
-import { groupItemsToSubrows, useTimelineContext } from "dnd-timeline";
+import type { ItemDefinition, RowDefinition } from "dnd-timeline-extended";
+import { groupItemsToSubrows, useTimelineContext } from "dnd-timeline-extended";
 import { useCallback, useMemo } from "react";
 import Item from "./Item";
 import Row from "./Row";

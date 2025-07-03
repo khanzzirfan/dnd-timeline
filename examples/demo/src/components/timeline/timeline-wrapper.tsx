@@ -5,8 +5,8 @@ import type {
 	DragStartEvent,
 	Range,
 	ResizeEndEvent,
-} from "dnd-timeline";
-import { TimelineContext } from "dnd-timeline";
+} from "dnd-timeline-extended";
+import { TimelineContext } from "dnd-timeline-extended";
 import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import type { PropsWithChildren } from "react";

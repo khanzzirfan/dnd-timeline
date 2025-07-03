@@ -6,8 +6,8 @@ import type {
 	DragStartEvent,
 	Range,
 	ResizeEndEvent,
-} from "dnd-timeline";
-import { TimelineContext } from "dnd-timeline";
+} from "dnd-timeline-extended";
+import { TimelineContext } from "dnd-timeline-extended";
 import { useCallback, useState } from "react";
 import Timeline from "./Timeline";
 import { generateItems, generateRows } from "./utils";

@@ -1,5 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable";
-import type { RowDefinition } from "dnd-timeline";
+import type { RowDefinition } from "dnd-timeline-extended";
 
 import { ItemType } from "./utils";
 

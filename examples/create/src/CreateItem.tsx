@@ -1,4 +1,4 @@
-import { type Span, useTimelineContext } from "dnd-timeline";
+import { type Span, useTimelineContext } from "dnd-timeline-extended";
 import { useEffect, useMemo, useRef } from "react";
 
 interface ItemProps {

@@ -38,7 +38,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       nanoid:
@@ -81,7 +81,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       nanoid:
@@ -139,7 +139,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       jotai:
@@ -206,7 +206,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       nanoid:
@@ -258,7 +258,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       jotai:
@@ -304,7 +304,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       nanoid:
@@ -350,7 +350,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       nanoid:
@@ -393,7 +393,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       nanoid:
@@ -439,7 +439,7 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      dnd-timeline:
+      dnd-timeline-extended:
         specifier: workspace:*
         version: link:../../packages/dnd-timeline
       nanoid:

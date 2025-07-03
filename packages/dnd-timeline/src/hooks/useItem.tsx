@@ -187,33 +187,38 @@ export default function useItem(props: UseItemProps) {
 
 		const pointerupHandler = (event: PointerEvent) => {
 			if (!dragStartX.current || !nodeRef.current) return;
+			try {
+				let dragDeltaX = 0;
+				if (dragDirection === "start") {
+					const currentSideDelta = Number.parseInt(
+						nodeRef.current.style[sideStart],
+					);
+					dragDeltaX = currentSideDelta - deltaXStart;
+				} else {
+					const currentWidth = Number.parseInt(nodeRef.current.style.width);
+					dragDeltaX = currentWidth - width;
+				}
 
-			let dragDeltaX = 0;
-			if (dragDirection === "start") {
-				const currentSideDelta = Number.parseInt(
-					nodeRef.current.style[sideStart],
-				);
-				dragDeltaX = currentSideDelta - deltaXStart;
-			} else {
-				const currentWidth = Number.parseInt(nodeRef.current.style.width);
-				dragDeltaX = currentWidth - width;
+				onResizeEndCallback({
+					activatorEvent: event,
+					delta: {
+						x: dragDeltaX,
+					},
+					direction: dragDirection,
+					active: {
+						id: props.id,
+						data: dataRef,
+					},
+				});
+
+				setDragDirection(null);
+				if(nodeRef.current && nodeRef.current.style) {
+					nodeRef.current.style.width = `${width}px`;
+					nodeRef.current.style[sideStart] = `${deltaXStart}px`;
+				}
+			} catch (error) {
+				console.log("Error in pointerupHandler:", error);
 			}
-
-			onResizeEndCallback({
-				activatorEvent: event,
-				delta: {
-					x: dragDeltaX,
-				},
-				direction: dragDirection,
-				active: {
-					id: props.id,
-					data: dataRef,
-				},
-			});
-
-			setDragDirection(null);
-			nodeRef.current.style.width = `${width}px`;
-			nodeRef.current.style[sideStart] = `${deltaXStart}px`;
 		};
 
 		window.addEventListener("pointerup", pointerupHandler);

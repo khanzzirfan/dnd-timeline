@@ -1,6 +1,6 @@
 import React, { memo, useRef, useLayoutEffect } from "react";
 
-import { useTimelineContext } from "dnd-timeline";
+import { useTimelineContext } from "dnd-timeline-extended";
 
 interface TimeCursorProps {
 	interval?: number;

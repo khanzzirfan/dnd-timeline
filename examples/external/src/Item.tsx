@@ -1,5 +1,5 @@
-import type { Span } from "dnd-timeline";
-import { useItem } from "dnd-timeline";
+import type { Span } from "dnd-timeline-extended";
+import { useItem } from "dnd-timeline-extended";
 import type React from "react";
 import { ItemType } from "./utils";
 

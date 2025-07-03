@@ -1,4 +1,4 @@
-import type { RowDefinition } from "dnd-timeline";
+import type { RowDefinition } from "dnd-timeline-extended";
 
 interface SidebarProps {
 	row: RowDefinition;
