@@ -50,6 +50,7 @@ export default function useItem(props: UseItemProps) {
 		onResizeStart,
 		direction,
 		resizeHandleWidth,
+		rangeGridSize,
 		valueToPixels,
 		getSpanFromDragEvent,
 		getSpanFromResizeEvent,
@@ -120,6 +121,19 @@ export default function useItem(props: UseItemProps) {
 	useLayoutEffect(() => {
 		if (!dragDirection) return;
 
+		// Snap live style writes to the configured grid so the visual matches the snapped
+		// span the consumer will receive on resize-end. Without this, the lib writes raw
+		// pixel deltas while the user drags, then commits a grid-aligned span on release —
+		// the swap is visible as a one-frame jump.
+		const gridPx = rangeGridSize ? valueToPixels(rangeGridSize) : 0;
+		const snap = (px: number) =>
+			gridPx > 0 ? Math.round(px / gridPx) * gridPx : px;
+		// Pre-snap the pixel bounds so clamps don't reintroduce sub-grid drift right at the
+		// edges. Without this, Math.min(maxWidthInPixel, newWidth) can shave up to gridPx/2
+		// off the snapped width, and the minStart compare uses unsnapped minLeft.
+		const snappedMaxWidth = snap(maxWidthInPixel);
+		const snappedMinLeft = snap(minLeft);
+
 		const pointermoveHandler = (event: PointerEvent) => {
 			if (!dragStartX.current || !nodeRef.current) return;
 
@@ -127,10 +141,10 @@ export default function useItem(props: UseItemProps) {
 				(event.clientX - dragStartX.current) * (direction === "rtl" ? -1 : 1);
 
 			if (dragDirection === "start") {
-				const newSideDelta = deltaXStart + dragDeltaX;
-				const newWidth = width + deltaXStart - newSideDelta;
-				if (minStartTime && minLeft >= newSideDelta) {
-					const currentMinLeft = Math.max(minLeft, newSideDelta);
+				const newSideDelta = snap(deltaXStart + dragDeltaX);
+				const newWidth = snap(width + deltaXStart - newSideDelta);
+				if (minStartTime && snappedMinLeft >= newSideDelta) {
+					const currentMinLeft = Math.max(snappedMinLeft, newSideDelta);
 					nodeRef.current.style[sideStart] = `${currentMinLeft}px`;
 				} else {
 					nodeRef.current.style[sideStart] = `${newSideDelta}px`;
@@ -138,18 +152,18 @@ export default function useItem(props: UseItemProps) {
 				}
 
 				if (maxEndTime) {
-					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
+					const currentMaxWidth = Math.min(snappedMaxWidth, newWidth);
 					nodeRef.current.style.width = `${currentMaxWidth}px`;
-					nodeRef.current.style.maxWidth = `${maxWidthInPixel}px`;
+					nodeRef.current.style.maxWidth = `${snappedMaxWidth}px`;
 				}
 			} else {
 				const otherSideDelta = deltaXStart + width + dragDeltaX;
-				const newWidth = otherSideDelta - deltaXStart;
+				const newWidth = snap(otherSideDelta - deltaXStart);
 				nodeRef.current.style.width = `${newWidth}px`;
 				if (maxEndTime) {
-					const currentMaxWidth = Math.min(maxWidthInPixel, newWidth);
+					const currentMaxWidth = Math.min(snappedMaxWidth, newWidth);
 					nodeRef.current.style.width = `${currentMaxWidth}px`;
-					nodeRef.current.style.maxWidth = `${maxWidthInPixel}px`;
+					nodeRef.current.style.maxWidth = `${snappedMaxWidth}px`;
 				}
 			}
 
@@ -180,6 +194,9 @@ export default function useItem(props: UseItemProps) {
 		maxEndTime,
 		minStartTime,
 		minDeltaXStart,
+		rangeGridSize,
+		valueToPixels,
+		minLeft,
 	]);
 
 	useLayoutEffect(() => {
@@ -212,6 +229,15 @@ export default function useItem(props: UseItemProps) {
 				});
 
 				setDragDirection(null);
+				// Restore inline styles to the React-canonical pre-drag values. Required
+				// because the consumer may legitimately decide not to commit a span change
+				// (consumer-side snap rounds the delta to zero, consumer clamps to the
+				// current span, consumer ignores the event). When that happens, the parent
+				// re-render produces an itemStyle memo with unchanged deps, React skips the
+				// DOM write, and the element is permanently stuck at the last pointermove-
+				// snapped pixels — visually desynced from props.span. When the consumer DOES
+				// commit a new span, the next paint immediately overwrites these values with
+				// the post-commit snapped pixels (collapsing the flash to one frame).
 				if (nodeRef.current && nodeRef.current.style) {
 					nodeRef.current.style.width = `${width}px`;
 					nodeRef.current.style[sideStart] = `${deltaXStart}px`;
@@ -349,5 +375,6 @@ export default function useItem(props: UseItemProps) {
 		},
 		setNodeRef: setRef,
 		isDragging,
+		isResizing: dragDirection !== null && dragDirection !== undefined,
 	};
 }
